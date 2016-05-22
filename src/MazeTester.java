@@ -180,7 +180,7 @@ class MazeTester {
 				break;
 			// sample solver to help you get started
 			case "sample":
-				mazeSolver = new SampleSolver();
+				//mazeSolver = new SampleSolver();
 				break;
 			// no solver
 			case "none":
