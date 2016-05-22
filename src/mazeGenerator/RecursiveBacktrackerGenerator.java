@@ -32,7 +32,7 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 		st.push(maze.entrance);
 		
 		//Add mark entrance cell as visitied
-		visited[maze.entrance.r][maze.entrance.c] = true;
+		setVisitedStatus(maze, maze.entrance, visited);
 		
 		//While there are still cells with unvisited neighbours on the stack, 
 		//search through the maze
@@ -61,7 +61,7 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 				st.push(nc);
 				
 				//Mark neighbour as visited
-				visited[nc.r][nc.c] = true;
+				setVisitedStatus(maze, nc, visited);
 			}
 			//If no unvisited neighbours, pop current cell from stack to 
 			//backtack in maze
@@ -80,6 +80,23 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 			
 	} //end of generateTunnelMaze()
 		
+	//Sets the visited status of the cell based on the type of maze
+	public boolean[][] setVisitedStatus(Maze maze, Cell cell, boolean[][] visited)
+	{
+		//If the maze is hexagonal
+		if(maze.type == Maze.HEX)
+		{
+			visited[cell.r][cell.c - (cell.r + 1) / 2] = true;
+		}
+		//If the maze is rectangular
+		else
+		{
+			visited[cell.r][cell.c] = true;
+		}
+		
+		return visited;
+	} //end of setVisitedStatus()
+	
 	//Returns a random direction to move in based on maze type, and if the 
 	//randomly selected cell has already been visited or not
 	public int get_rand_direction(Maze maze, Cell cell, boolean[][] visited)
@@ -107,12 +124,25 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 				continue;
 			}
 			
-			//If the selected cell has not been visited, move to the 
-			//cell	
-			if(visited[nc.r][nc.c] == false)
+			//If maze is a hexagonal maze
+			if(maze.type == Maze.HEX)
 			{
-				unvisited = true;
-			}					
+				if(visited[nc.r][nc.c - (nc.r + 1) / 2] == false)
+				{
+					unvisited = true;
+				}
+			}
+			
+			//If the maze is a rectangular maze
+			else
+			{
+				//If the selected cell has not been visited, move to the 
+				//cell	
+				if(visited[nc.r][nc.c] == false)
+				{
+					unvisited = true;
+				}
+			}								
 		}
 		
 		return dir;
@@ -137,8 +167,7 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 					continue;
 				}
 				
-				//If the neighbouring cell has been unvisited, return true
-				if(visited[nc.r][nc.c] == false)
+				if(visited[nc.r][nc.c - (nc.r + 1) / 2] == false)
 				{
 					return true;
 				}
@@ -166,13 +195,14 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 				if(nc == null)
 				{
 					continue;
-				}
+				}			
 				
 				//If the neighbouring cell has been unvisited, return true
 				if(visited[nc.r][nc.c] == false)
 				{
 					return true;
 				}
+							
 			}			
 		}
 		//If all neighbouring cells have been visited, return false
