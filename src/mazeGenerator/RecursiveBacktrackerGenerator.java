@@ -41,6 +41,20 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 			//Get the current cell from the stack, without removing it
 			currCell = st.peek();
 			
+			//Check if the current cell is an entrance to a tunnel
+			if(currCell.tunnelTo != null)
+			{
+				//Set current cell to the other end of the tunnel
+				currCell = currCell.tunnelTo;
+				
+				//If the cell is a tunnel, immediately go to other end of the 
+				//tunnel
+				st.push(currCell);
+				
+				//Set the cell at end of the tunnel to visited
+				setVisitedStatus(maze, currCell, visited);
+			}
+			
 			//Check if cell on top of the stack has any unvisitied neighbours
 			if(check_for_neighbours(currCell, maze, visited))
 			{	
@@ -68,6 +82,16 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 			else
 			{
 				st.pop();
+				
+				//If the stack is not currently empty
+				if(st.isEmpty() == false)
+				{
+					//If the next element is a tunnel, remove it from stack
+					if(st.peek().tunnelTo != null)
+					{
+						st.pop();
+					}
+				}
 			}			
 		}
 		
