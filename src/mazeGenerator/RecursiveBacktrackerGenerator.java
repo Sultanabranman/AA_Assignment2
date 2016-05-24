@@ -65,8 +65,8 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 				//Set nc to the randomly selected neighbour cell
 				nc = currCell.neigh[r];
 				
-				//Remove wall in direction of randomly selected neighbour cell
-				currCell.wall[r].present = false;
+				//Remove walls in direction of randomly selected neighbour cell
+				remove_walls(currCell, nc);
 				
 				//Update the current cell in the maze
 				maze.map[currCell.r][currCell.c] = currCell;			
@@ -268,5 +268,44 @@ public class RecursiveBacktrackerGenerator implements MazeGenerator {
 		
 		return r;
 	} //end of get_rand_int()
+	
+	//Remove the walls separating fc and nc
+	public void remove_walls(Cell currCell, Cell nc)
+	{
+		//Remove wall in direction of nc for cell fc. 
+		for(int i = 0; i < currCell.neigh.length; i++)
+		{
+			//If the neighbour is not present, don't check that direction
+			if(currCell.neigh[i] == null)
+			{
+				continue;
+			}
+			//If the neighbour is in direction i is nc, remove wall in that direction
+			if(currCell.neigh[i] == nc)
+			{
+				//remove the wall in direction i
+				currCell.wall[i].present = false;
+			}
+		}
+		
+		//Remove wall in direction of fc for cell nc. 
+		for(int i = 0; i < nc.neigh.length; i++)
+		{
+			//If the neighbour is not present, don't check that direction
+			if(nc.neigh[i] == null)
+			{
+				continue;
+			}
+			//If the neighbour in direction i is nc, remove wall in that direction
+			if(nc.neigh[i] == currCell)
+			{
+				//remove the wall in direction i
+				nc.wall[i].present = false;
+			}
+		}
+		
+		return;
+	} //end of remove_walls()
+	
 
 } // end of class RecursiveBacktrackerGenerator
